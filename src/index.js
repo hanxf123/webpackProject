@@ -28,3 +28,4 @@ class Circle {
 }
 
 const a = new Circle(2)
+console.log(VERSION)

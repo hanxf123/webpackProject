@@ -15,6 +15,10 @@ mini-css-extract-plugin<!--用于css分离，默认css会被打包到引入文�
 uglifyjs-webpack-plugin<!--用于js压缩-->
 
 optimize-css-assets-webpack-plugin<!--用于css压缩-->
+
+copy-webpack-plugin<!--用于拷贝没有被引用的文件 参数：from ，to-->
+
+clean-webpack-plugin<!--打包前清空目录-->
 ##loader（从右往左加载）
 css-loader
 
@@ -58,6 +62,9 @@ babel-plugin-transform-decorators-legacy<!--转化装饰器语法插件-->
 
 ##devtools
 
+##morgan nodejs日志工具
+##中间件
+webpack-dev-middleware<!--下Express中提供webpack-dev-server静态能力服务的中间件-->
 
 
 
