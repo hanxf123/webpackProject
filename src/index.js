@@ -28,4 +28,4 @@ class Circle {
 }
 
 const a = new Circle(2)
-console.log(VERSION)
+console.log(VERSION,process.env.NODE_ENV)

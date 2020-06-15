@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 const webpack = require('webpack')
 const mock = require('./mock')
 module.exports = {
@@ -28,7 +29,11 @@ module.exports = {
   entry:'./src/index.js',
   output: {
     path: path.resolve('dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    // 导出模块，类似node_modules里面的库，打包之后会生成var calculator = (function(){}())
+    // library: 'calculator',
+    // 导出规则，默认是var
+    // libraryTarget: "commonjs", // commonjs2/this/window/global=window
   },
   devServer: {
     host: '127.0.0.1',
@@ -93,7 +98,7 @@ module.exports = {
       {
         test: /\.(png|gif|jpg|svg)$/,
         use: {
-          loader: "file-loader",
+          loader: "url-loader",
           options: {
             outputPath: 'images', // 指定图片输出路径
             esModule: false // 该配置项为图片打包后的默认路径，带default对象，默认为ture，在配置项里将此项改为false即可去掉多余的defalut对象，否则下面html-withimg-loader html路径会变成{defult：XXXX.png}
@@ -106,21 +111,19 @@ module.exports = {
       },
       {
         test: /\.(js|jsx)$/,
-        // __dirname指代当前路径
-        include: path.resolve(__dirname, 'src'),
         exclude: /node_modules/,
-        use: {
+        use: [{
           loader: "babel-loader",
           options: {
             presets: ['@babel/preset-env'],
             plugins: [['@babel/plugin-proposal-decorators', { "legacy": true }],'@babel/plugin-proposal-class-properties']
           }
-        }
+        },'eslint-loader']
       },
       {
         test: /\.(ts|tsx)$/,
         use: ['ts-loader'],
-        include: path.resolve('src'),
+        include: path.resolve('src'),// include,exclude能大大提升编译速度
         exclude: /node_modules/
       },
       {
@@ -132,7 +135,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-      filename: "index.html"
+      filename: "index.html",
+      chunks: ['index'], // 指定html加载哪个js，针对多入口生成多html时
     }),
     // 需要将上面的loader中的style-loader改成MiniCssExtractPlugin.loader
     new MiniCssExtractPlugin({
@@ -153,6 +157,10 @@ module.exports = {
       COPYRIGHT: {
         AUTHOR: JSON.stringify('hxf-test')
       }
+    }),
+    // 编译时会查找json中是否包含想要打包的文件，如果包含则略过，有dll.js文件提供输出；打包后需要手动在index.html中引入dll.js文件
+    new DllReferencePlugin({
+      manifest: path.resolve(__dirname, 'dllDist/main.manifest.json')
     })
   ]
 }

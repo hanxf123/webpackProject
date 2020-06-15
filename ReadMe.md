@@ -37,6 +37,10 @@ postcss-loader<!--处理css属性前缀-->
 
 expose-loader<!--将模块挂在到全局（window下）-->
 
+image-webpack-loader<!--通过把图片分辨率降低的方法压缩图片，不常用-->
+
+eslint-loader<!--esLint校验-->
+
 ##TypeScript
 npm i typescript -g
 
@@ -65,6 +69,17 @@ babel-plugin-transform-decorators-legacy<!--转化装饰器语法插件-->
 ##morgan nodejs日志工具
 ##中间件
 webpack-dev-middleware<!--下Express中提供webpack-dev-server静态能力服务的中间件-->
+##合并配置文件
+<!--在生产环境(webpack.prod.js)和开发环境(webpack.dev.js)配置不同的webpack,
+通过merge.smart(base,{mode:development/production})和基础文件进行合并，
+在package.json中通过--config选择执行不同的配置文件-->
+webpack-merge
+##library和libraryTarget
+<!--导出模块，类似node_modules里面的库-->
+##DLL<!--webpack最有效打包的优化手段之一，动态链接库-->
+DllPlugin<!--用于打包出一个个动态连接库，内置插件-->
+
+DllReferencePlugin<!--在配置文件中引入DllPlugin插件打包好的动态连接库，内置插件-->   
 
 
 
