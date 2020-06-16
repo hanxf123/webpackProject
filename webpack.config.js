@@ -6,9 +6,28 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 const webpack = require('webpack')
 const mock = require('./mock')
+const ModuleConcatenationPlugin = require('webpack/lib/optimize/ModuleConcatenationPlugin')
 module.exports = {
-  // 通过webpack打包提取公共代码
   optimization: {
+    // 对应webpack优化 5.提取公共代码
+    splitChunks: {
+      cacheGroups: {
+        // 把公共的第三方模块都打包到单独的js文件中
+        vender: {
+          test: /node_modules/, // 第三方模块
+          chunks: "initial", // 代码块是直接饮用
+          name: "vendor", // 打包文件的名字
+          priority: 10, // 优先级
+          enforce: true, // 强制执行
+        },
+        // 把多个文件之间的公共模块提取出来
+        commons: {
+          chunks: "initial", // 代码块是直接饮用
+          minChunks: 2, // 使用最小次数
+          minSize: 0, // 单独提取的文件的最小字节数（文件过小的时候可以不提取）
+        }
+      }
+    },
     minimizer: [
       // 对js，css的压缩需要在mode=production的模式下才生效
       new UglifyJsWebpackPlugin({
@@ -26,7 +45,7 @@ module.exports = {
   },
   devtool: 'eval-source-map',
   mode: 'development', // 默认production-生产模式，development-开发模式
-  entry:'./src/index.js',
+  entry: './src/index.js',
   output: {
     path: path.resolve('dist'),
     filename: 'bundle.js',
@@ -51,14 +70,14 @@ module.exports = {
       }
     },
     // 在请求到静态资源之前配置路由 app=express();
-    before(app) {
+    before (app) {
       // app.get('/user',function(res, res){
       //   res.json({id:1, name:'test'})
       // })
       mock(app);
     },
     // 请求静态资源之后的处理，极少用到
-    after(app) {
+    after (app) {
       app.use(function (err, req, res, next) {
         res.send('请求路径不正确')
       })
@@ -93,7 +112,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader ,'css-loader', 'postcss-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
       },
       {
         test: /\.(png|gif|jpg|svg)$/,
@@ -116,9 +135,9 @@ module.exports = {
           loader: "babel-loader",
           options: {
             presets: ['@babel/preset-env'],
-            plugins: [['@babel/plugin-proposal-decorators', { "legacy": true }],'@babel/plugin-proposal-class-properties']
+            plugins: [['@babel/plugin-proposal-decorators', { "legacy": true }], '@babel/plugin-proposal-class-properties']
           }
-        },'eslint-loader']
+        }, 'eslint-loader']
       },
       {
         test: /\.(ts|tsx)$/,
@@ -136,7 +155,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
       filename: "index.html",
-      chunks: ['index'], // 指定html加载哪个js，针对多入口生成多html时
+      // chunks: ['index'], // 指定html加载哪个js，针对多入口生成多html时；如果不配置，会把生成的所有js引入；配置之后只会引入配置的模块，不会引入关联模块
     }),
     // 需要将上面的loader中的style-loader改成MiniCssExtractPlugin.loader
     new MiniCssExtractPlugin({
@@ -145,7 +164,7 @@ module.exports = {
     }),
     // 公共模块配置，可在项目中直接使用，不需要在每个文件中单独引入一遍。内置插件，不需要安装
     new webpack.ProvidePlugin({
-      "_":"lodash"
+      "_": "lodash"
     }),
     // 添加标签，会在bundle.js顶部注释
     new webpack.BannerPlugin('hxf'),
@@ -153,7 +172,7 @@ module.exports = {
     new webpack.DefinePlugin({
       PRODUCTION: JSON.stringify(true), // 只能写字符串
       VERSION: JSON.stringify("1.0.0"),
-      EXPRESSION: 1+1+1, // 可以放字符串，表达式，boolean值等;表达式
+      EXPRESSION: 1 + 1 + 1, // 可以放字符串，表达式，boolean值等;表达式
       COPYRIGHT: {
         AUTHOR: JSON.stringify('hxf-test')
       }
@@ -161,6 +180,8 @@ module.exports = {
     // 编译时会查找json中是否包含想要打包的文件，如果包含则略过，有dll.js文件提供输出；打包后需要手动在index.html中引入dll.js文件
     new DllReferencePlugin({
       manifest: path.resolve(__dirname, 'dllDist/main.manifest.json')
-    })
+    }),
+    // 变量提升
+    new ModuleConcatenationPlugin(),
   ]
 }
