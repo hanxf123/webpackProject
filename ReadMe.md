@@ -77,7 +77,7 @@ webpack-merge
 ##library和libraryTarget
 <!--导出模块，类似node_modules里面的库-->  
 ##打包优化
-1.DLL<!--webpack最有效打包的优化手段之一，动态链接库-->···
+1.DLL<!--webpack最有效打包的优化手段之一，动态链接库-->
 
 1）DllPlugin<!--用于打包出一个个动态连接库，内置插件-->
 
@@ -94,3 +94,5 @@ webpack-merge
 6.Scope Hoisting 作用域提升<!--使打包文件更小，运行更快-->
 
 7.动态导入和懒加载
+<!--undefined(未加载)->null(预加载)->Promise(加载中)->0(加载完成)-->
+ 

@@ -7,6 +7,7 @@ import './index.less'
   get(){}
   set(){}
 }*/
+// 装饰器
 function readonly(target, key, discriptor) {
   discriptor.writable = false;
 }
@@ -28,4 +29,25 @@ class Circle {
 }
 
 const a = new Circle(2)
+
+// 懒加载-> 按需加载
+function lazyClick() {
+  import('./lazy').then((res) => {
+    console.log(res);
+  })
+}
+lazyClick()
+// 全局变量
 console.log(VERSION,process.env.NODE_ENV)
+// 我也不知道怎么描述，但是感觉很神奇
+let exp = {name:'1'};
+exp[Symbol.toStringTag] = 'Module';
+function F (x, y) {  //构造函数
+  this.x = x;
+  this.y = y;
+}
+const f = new F(1,2);
+console.log(F.toString())
+console.log(f.toString())
+console.log(exp.toString())
+console.log(Object.prototype.toString.call(['a']))

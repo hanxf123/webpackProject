@@ -178,9 +178,9 @@ module.exports = {
       }
     }),
     // 编译时会查找json中是否包含想要打包的文件，如果包含则略过，有dll.js文件提供输出；打包后需要手动在index.html中引入dll.js文件
-    new DllReferencePlugin({
-      manifest: path.resolve(__dirname, 'dllDist/main.manifest.json')
-    }),
+    // new DllReferencePlugin({
+    //   manifest: path.resolve(__dirname, 'dllDist/main.manifest.json')
+    // }),
     // 变量提升
     new ModuleConcatenationPlugin(),
   ]
