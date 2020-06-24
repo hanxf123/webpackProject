@@ -20,6 +20,11 @@ copy-webpack-plugin<!--用于拷贝没有被引用的文件 参数：from ，to-
 
 clean-webpack-plugin<!--打包前清空目录-->
 ##loader（从右往左加载）
+
+1.用于对模块的源码进行转换
+
+2.可以在import或者‘加载’模块时预处理文件
+
 css-loader
 
 style-loader
