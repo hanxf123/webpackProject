@@ -83,19 +83,26 @@ module.exports = {
       })
     }
   },
+
   // 填加在其中的文件不会被打包到bundle.js中，能够减小体积，一般是从cdn引入的文件
   /*externals: {
     jquery: "jQuery"
   },*/
+
   // 配置如何寻找Loader
-  /*resolveLoader: {
-    modules: ['node_modules','others'], // 后面可以跟自己写的loader模块
-  },*/
+  resolveLoader: {
+    modules: ['node_modules',path.resolve(__dirname,'src/loaders')], // 后面可以跟自己写的loader模块['node_modules','others'],
+    // 只针对loader生效
+    alias:{
+      'my-loader': path.resolve(__dirname,'src/loaders/my-loader.js')
+    }
+  },
+
   // 配置如何寻找普通模块
   /*resolve: {
     // 查找的后缀名，一般情况不要配置太多，避免查找混乱
     extensions: ['js','jsx','json'],
-    // 配置路径，引入时可以直接用component
+    // 配置路径，引入时可以直接用component，针对所有模块生效
     alias: {
       'component': __dirname+'src/component'
     },
@@ -105,11 +112,22 @@ module.exports = {
     // 当目录下没有package.json情况下，默认调用index.js,mainFiles可配置调用文件
     mainFiles: ['index']
   },*/
+
   module: {
     // 配置不需要解析的模块
     noParse: /jquery|lodash/,
     // 配置Loader
     rules: [
+      /*加载自己写的loader
+      1.绝对路径
+      2.通过resolveLoader-alias配置别名
+      3.通过resolveLoader-modules配置文件夹
+      4.npm link*/
+      {
+        test: /\.js$/,
+        // use: [path.resolve(__dirname,'src/loaders/my-loader.js')],
+        use: ['my-loader']
+      },
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
