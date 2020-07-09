@@ -50,3 +50,10 @@ function sum (a, b, c) {
 }
 const curryFn = curry(sum);
 curryFn(1)(2)(3)
+
+new Promise((resolve) => {
+  resolve(1);
+  setTimeout(() => console.log('setTimeout'))
+}).then(() => console.log('then')).then(() => console.log('then2'));
+setTimeout(() => {
+  console.log('setTimeout2')})
