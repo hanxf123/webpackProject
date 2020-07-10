@@ -16,6 +16,18 @@
 
 8.在以上过程中，webpack会在特定时间广播特定事件，调用插件
 
+##核心类
+
+1.Compiler 编译者
+
+2.Compilation 单次编译
+
+3.ModuleFactory 模块工厂
+
+4.Parser 解析者 
+ 
+5.Template 模板 
+
 ##项目初始化
 npm init -y <!--生成空项目，空package.json-->
 
